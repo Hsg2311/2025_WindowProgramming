@@ -2,6 +2,7 @@
 #include <string>
 #include <vector>
 #include <array>
+#include <algorithm>
 
 void printSentence( const std::vector<std::string>&, const std::vector<int>& );
 
@@ -13,8 +14,14 @@ int main( )
 	auto spaceCnt = std::vector<int>( );
 	auto alphabetCnt = std::array<int, 26>( );
 
+	bool isPressedN3 = false;
+	bool isPressedN4 = false;
+
 	std::cout << "문장 입력: ";
 	std::getline( std::cin, sentence );
+
+	auto copySentence = std::string( sentence );
+	copySentence.erase( std::remove( copySentence.begin( ), copySentence.end( ), ' ' ), copySentence.end( ) );
 	
 	auto s = std::string( );
 	for ( auto i = 0; i < sentence.size( ); ++i ) {
@@ -75,6 +82,9 @@ int main( )
 				}
 			}
 			printSentence( strs, spaceCnt );
+
+			isPressedN3 = false;
+			isPressedN4 = false;
 		}
 
 		// 공백 하나씩 늘리기
@@ -83,6 +93,9 @@ int main( )
 				++spaceCnt[ i ];
 			}
 			printSentence( strs, spaceCnt );
+
+			isPressedN3 = false;
+			isPressedN4 = false;
 		}
 
 		//a~z 입력 받기
@@ -96,11 +109,43 @@ int main( )
 				}
 			}
 
+			copySentence.clear( );
+			for ( auto& s : strs ) {
+				copySentence += s;
+			}
+
 			printSentence( strs, spaceCnt );
+
+			isPressedN3 = false;
+			isPressedN4 = false;
 		}
 		
+		// 오름차순 정렬
 		else if ( cmd == '3' ) {
+			if ( !isPressedN3 ) {
+				std::sort( copySentence.begin( ), copySentence.end( ) );
+				std::cout << copySentence << '\n';
+				isPressedN3 = true;
+				isPressedN4 = false;
+			}
+			else {
+				printSentence( strs, spaceCnt );
+				isPressedN3 = false;
+			}
+		}
 
+		// 내림차순 정렬
+		else if ( cmd == '4' ) {
+			if ( !isPressedN4 ) {
+				std::sort( copySentence.begin( ), copySentence.end( ), std::greater<char>( ) );
+				std::cout << copySentence << '\n';
+				isPressedN4 = true;
+				isPressedN3 = false;
+			}
+			else {
+				printSentence( strs, spaceCnt );
+				isPressedN4 = false;
+			}
 		}
 
 		// 알파벳 개수 세기
@@ -116,6 +161,9 @@ int main( )
 			for ( auto i = 0; i < alphabetCnt.size( ); ++i ) {
 				std::cout << static_cast<char>( i + 'a' ) << ": " << alphabetCnt[ i ] << '\n';
 			}
+
+			isPressedN3 = false;
+			isPressedN4 = false;
 		}
 	}
 }
