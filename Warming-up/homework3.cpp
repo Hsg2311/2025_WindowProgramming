@@ -52,6 +52,9 @@ int main( )
 		}
 		else if ( cmd == '9' ) {
 			InitGrid( );
+			cursorX = 0;
+			cursorY = 0;
+			target = ' ';
 		}
 		else if ( cmd == '0' ) {
 			break;
