@@ -173,6 +173,8 @@ int main( )
 
 			nums.clear( );
 			std::copy( vec.begin( ), vec.begin( ) + 30, std::back_inserter( nums ) );
+			copyNums.clear( );
+			std::copy( nums.begin( ), nums.end( ), std::back_inserter( copyNums ) );
 
 			for ( const auto& n : nums ) {
 				std::cout << n << ' ';
