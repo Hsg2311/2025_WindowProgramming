@@ -18,6 +18,7 @@ char board[ size ][ size ];
 auto p1_x = 0, p1_y = 0, p2_x = 0, p2_y = 0;
 auto p1_score = 0, p2_score = 0;
 auto itemCount = 10;
+bool p1_turn = true;
 
 void InitBoard( );
 void PrintBoard( );
@@ -98,6 +99,12 @@ void PrintBoard( ) {
 		std::cout << '\n';
 	}
 	std::cout << "P1(x) Score: " << p1_score << " | P2(@) Score: " << p2_score << '\n';
+	if ( p1_turn ) {
+		std::cout << "P1(x) Turn\n";
+	}
+	else {
+		std::cout << "P2(@) Turn\n";
+	}
 }
 
 void MovePlayer( char player, int& px, int& py, int dx, int dy ) {
@@ -129,7 +136,6 @@ void MovePlayer( char player, int& px, int& py, int dx, int dy ) {
 }
 
 void PlayGame( ) {
-	bool p1_turn = true;
 	while ( itemCount > 0 ) {
 		PrintBoard( );
 		char cmd = _getch( );
