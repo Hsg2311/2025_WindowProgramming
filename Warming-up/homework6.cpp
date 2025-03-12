@@ -20,6 +20,7 @@ auto currWord = std::string( );
 auto dispWord = std::string( );
 bool active = false;
 bool correct = false;
+bool open = false;
 
 void InitGrid( );
 void PrintGrid( );
@@ -41,6 +42,10 @@ int main( )
 				correct = false;
 			}
 
+			for ( auto i = 0; i < words.size( ); ++i ) {
+				std::cout << i + 1 << ") " << words[ i ] << " ";
+			}
+			std::cout << '\n';
 			std::cout << "단어 선택(1~5) or 게임 종료\n";
 			char cmd = _getch( );
 
@@ -75,6 +80,9 @@ int main( )
 			cursorX = 0;
 			cursorY = 0;
 			active = false;
+		}
+		else if ( cmd == 'h' ) {
+			open = !open;
 		}
 		else if ( cmd == '0' ) {
 			break;
@@ -126,6 +134,9 @@ void PrintGrid( ) {
 		}
 		std::cout << '\n';
 	}
+	if ( open ) {
+		std::cout << "맞춰야 할 단어 : " << currWord << '\n';
+	}
 	if ( active ) {
 		std::cout << "Word: " << dispWord << '\n';
 	}
@@ -134,19 +145,31 @@ void PrintGrid( ) {
 void MoveCursor( int dir ) {
 	switch ( dir ) {
 	case 1:
-		cursorX = std::max( 0, cursorX - 1 );
+		--cursorX;
+		if ( cursorX < 0 ) {
+			cursorX = col - 1;
+		}
 		break;
 
 	case 2:
-		cursorX = std::min( col - 1, cursorX + 1 );
+		++cursorX;
+		if ( cursorX >= col ) {
+			cursorX = 0;
+		}
 		break;
 
 	case 3:
-		cursorY = std::max( 0, cursorY - 1 );
+		--cursorY;
+		if ( cursorY < 0 ) {
+			cursorY = row - 1;
+		}
 		break;
 
 	case 4:
-		cursorY = std::min( row - 1, cursorY + 1 );
+		++cursorY;
+		if ( cursorY >= row ) {
+			cursorY = 0;
+		}
 		break;
 
 	default:
@@ -186,6 +209,7 @@ void SelectLetter( ) {
 		}
 
 		grid[ cursorY ][ cursorX ] = 'O';
+		fixed[ cursorY ][ cursorX ] = true;
 
 		if ( dispWord == currWord ) {
 			active = false;
@@ -195,6 +219,7 @@ void SelectLetter( ) {
 	else {
 		std::cout << '\a';
 		grid[ cursorY ][ cursorX ] = '@';
+		fixed[ cursorY ][ cursorX ] = true;
 	}
 }
 
