@@ -289,69 +289,64 @@ LRESULT CALLBACK WndProc( HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam
 			isInsertPressed = !isInsertPressed;
 		}
 		else if ( wParam == VK_DELETE ) {
-			if ( arr[ line ].front( ) == L' ' ) {
-				if ( line > 0 ) {
-					--line;
-					caretPosY -= caretHeight;
-					count = totalLineCount[ line ];
-					caretLineCount = count;
-
-					auto str = std::wstring( arr[ line ].begin( ), arr[ line ].begin( ) + totalLineCount[ line ] );
-					GetTextExtentPoint( hDC, str.c_str( ), static_cast<int>( str.size( ) ), &size );
-					caretPosX = size.cx;
-				}
-				ReleaseDC( hWnd, hDC );
-				InvalidateRect( hWnd, nullptr, true );
-				break;
-			}
-
-			if ( count != arr[ line ].size( ) ) {
-				arr[ line ][ count ] = L' ';
-				auto tempStr = std::wstring( arr[ line ].begin( ) + count + 1, arr[ line ].end( ) );
-
-				for ( auto iter = arr[ line ].begin( ) + count + 1; iter != arr[ line ].end( ); ++iter ) {
-					*iter = L' ';
-				}
-				
-				auto tmpCnt = count;
-				for ( auto i = 0; i < tempStr.size( ); ++i ) {
-					arr[ line ][ tmpCnt++ ] = tempStr[ i ];
-				}
-
-				for ( auto riter = arr[ line ].rbegin( ); ; ++riter ) {
-					if ( riter == arr[ line ].rend( ) ) {
-						strLineCount[ line ] = 0;
-						break;
-					}
-					if ( *riter != L' ' ) {
-						std::uint16_t tmpCnt = std::distance( arr[ line ].begin( ), riter.base( ) );
-						strLineCount[ line ] = tmpCnt;
+			if ( arr[ line ][ count ] == L' ' ) {
+				int start{ };
+				int end{ };
+				for ( auto i = count + 1; i < totalLineCount[ line ]; ++i ) {
+					if ( arr[ line ][ i ] != L' ' ) {
+						start = i;
 						break;
 					}
 				}
+				for ( auto i = start; i < arr[ line ].size( ); ++i ) {
+					if ( arr[ line ][ i ] == L' ' ) {
+						end = i;
+						break;
+					}
+				}
+
+				auto str = std::wstring( arr[ line ].begin( ) + end, arr[ line ].end( ) );
+				int strCnt = 0;
+				for ( auto i = start; i < start + str.size( ); ++i ) {
+					arr[ line ][ i ] = str[ strCnt++ ];
+					if ( i == start + str.size( ) - 1 && i != arr[ line ].size( ) - 1 ) {
+						for ( auto j = i; j < arr[ line ].size( ); ++j ) {
+							arr[ line ][ j ] = L' ';
+						}
+					}
+				}
+
 				for ( auto i = 0; i < arr.size( ); ++i ) {
 					auto s = std::wstring( arr[ i ].begin( ), arr[ i ].begin( ) + strLineCount[ i ] );
 					tempStrs[ i ] = s;
 				}
-
-				totalLineCountCheck( );
-
-				std::cout << "arr" << std::endl;
-				for ( const auto& a : arr ) {
-					for ( const auto& b : a ) {
-						std::wcout << b;
+			}
+			else {
+				int tmpCnt = count;
+				int start{ };
+				int end{ };
+				while ( true ) {
+					if ( arr[ line ][ --tmpCnt ] == L' ' ) {
+						start = tmpCnt;
+						break;
 					}
-					std::wcout << std::endl;
+				}
+				for ( auto i = start + 1; i < arr[ line ].size( ); ++i ) {
+					if ( arr[ line ][ i ] == L' ' ) {
+						end = i;
+						break;
+					}
 				}
 
-				std::cout << "tempStrs" << std::endl;
-				for ( const auto& a : tempStrs ) {
-					std::wcout << a << std::endl;
-				}
-
-				std::cout << "totalCount" << std::endl;
-				for ( const auto& a : totalLineCount ) {
-					std::cout << a << std::endl;
+				auto str = std::wstring( arr[ line ].begin( ) + end, arr[ line ].end( ) );
+				int strCnt = 0;
+				for ( auto i = start; i < start + str.size( ); ++i ) {
+					arr[ line ][ i ] = str[ strCnt++ ];
+					if ( i == start + str.size( ) - 1 && i != arr[ line ].size( ) - 1 ) {
+						for ( auto j = i; j < arr[ line ].size( ); ++j ) {
+							arr[ line ][ j ] = L' ';
+						}
+					}
 				}
 			}
 		}
